@@ -1,11 +1,9 @@
 import { useState, useCallback } from 'react';
-import { QRCodeCanvas } from 'qrcode.react';
 import {
   Box,
   Button,
   Container,
   Input,
-  VStack,
   Text,
   useColorMode,
   Select,
@@ -18,33 +16,74 @@ import {
   GridItem,
   Flex,
   Textarea,
+  useToast,
+  Image,
+  Spinner,
 } from '@chakra-ui/react';
 import { FaDownload } from 'react-icons/fa';
 
+const API_URL = 'http://localhost:8000/api';
+
 const QRGenerator = () => {
   const [text, setText] = useState('');
-  const [size, setSize] = useState(250);
   const [template, setTemplate] = useState('modern');
+  const [qrCode, setQrCode] = useState('');
+  const [loading, setLoading] = useState(false);
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
-
-  const downloadQRCode = useCallback(() => {
-    const canvas = document.querySelector('canvas');
-    if (canvas) {
-      const url = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.download = 'qrcode.png';
-      link.href = url;
-      link.click();
-    }
-  }, []);
+  const toast = useToast();
 
   const templates = {
-    classic: { fgColor: '#000000', bgColor: '#FFFFFF' },
-    modern: { fgColor: '#2B5BE0', bgColor: '#FFFFFF' },
-    dots: { fgColor: '#1A365D', bgColor: '#FFFFFF' },
-    rounded: { fgColor: '#000000', bgColor: '#FFFFFF' }
+    modern: { foreground: '#2B5BE0', background: '#FFFFFF' },
+    classic: { foreground: '#000000', background: '#FFFFFF' },
+    dots: { foreground: '#1A365D', background: '#FFFFFF' },
+    rounded: { foreground: '#000000', background: '#FFFFFF' }
   };
+
+  const generateQRCode = useCallback(async () => {
+    if (!text) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: text,
+          ...templates[template],
+          size: 250,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate QR code');
+      }
+
+      const data = await response.json();
+      setQrCode(data.image);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [text, template, toast]);
+
+  const downloadQRCode = useCallback(() => {
+    if (!qrCode) return;
+
+    const link = document.createElement('a');
+    link.download = 'qrcode.png';
+    link.href = qrCode;
+    link.click();
+  }, [qrCode]);
 
   return (
     <Container maxW="container.lg" py={4}>
@@ -152,6 +191,18 @@ Opening hours: 9 AM - 6 PM"
               <option value="dots">Navy Dots</option>
               <option value="rounded">Rounded Black</option>
             </Select>
+
+            <Button
+              colorScheme="blue"
+              onClick={generateQRCode}
+              isLoading={loading}
+              loadingText="Generating..."
+              width="full"
+              size="lg"
+              mb={4}
+            >
+              Generate QR Code
+            </Button>
           </Box>
         </GridItem>
 
@@ -178,21 +229,29 @@ Opening hours: 9 AM - 6 PM"
               borderColor={isDark ? 'gray.600' : 'gray.200'}
               transition="transform 0.2s"
               _hover={{ transform: 'scale(1.02)' }}
+              position="relative"
+              minH="250px"
+              minW="250px"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
             >
-              <QRCodeCanvas
-                value={text || 'https://example.com'}
-                size={size}
-                {...templates[template]}
-                level="H"
-                includeMargin
-              />
+              {loading ? (
+                <Spinner size="xl" color="blue.500" thickness="4px" />
+              ) : qrCode ? (
+                <Image src={qrCode} alt="QR Code" />
+              ) : (
+                <Text color={isDark ? 'gray.400' : 'gray.500'}>
+                  Your QR code will appear here
+                </Text>
+              )}
             </Box>
 
             <Button
               leftIcon={<FaDownload />}
               colorScheme="blue"
               onClick={downloadQRCode}
-              isDisabled={!text}
+              isDisabled={!qrCode}
               size="lg"
               width={{ base: "full", md: "200px" }}
               _hover={{

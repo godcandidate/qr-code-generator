@@ -1,0 +1,12 @@
+2025-03-10 10:48:37.786 | ERROR    | app.api.qr_endpoints:generate_qr_code:54 - Error generating QR code: Error 111 connecting to localhost:6379. Connection refused.
+2025-03-10 11:05:28.371 | ERROR    | app.api.qr_endpoints:generate_qr_code:54 - Error generating QR code: Error 111 connecting to localhost:6379. Connection refused.
+2025-03-10 11:05:44.827 | ERROR    | app.api.qr_endpoints:generate_qr_code:54 - Error generating QR code: Error 111 connecting to localhost:6379. Connection refused.
+2025-03-10 11:06:40.152 | ERROR    | app.api.qr_endpoints:generate_qr_code:54 - Error generating QR code: Error 111 connecting to localhost:6379. Connection refused.
+2025-03-10 11:21:30.043 | ERROR    | app.api.qr_endpoints:generate_qr_code:54 - Error generating QR code: Error 111 connecting to localhost:6379. Connection refused.
+2025-03-10 11:22:39.996 | WARNING  | app.api.qr_endpoints:get_redis:18 - Redis connection failed, running without caching
+2025-03-10 11:22:40.085 | ERROR    | app.services.qr_service:generate_qr_code:107 - Error generating QR code: 'int' object has no attribute 'lower'
+2025-03-10 11:23:18.328 | WARNING  | app.api.qr_endpoints:get_redis:18 - Redis connection failed, running without caching
+2025-03-10 11:23:18.415 | ERROR    | app.services.qr_service:generate_qr_code:107 - Error generating QR code: 'int' object has no attribute 'lower'
+2025-03-10 11:32:18.375 | ERROR    | app.services.qr_service:generate_qr_code:54 - Error generating QR code: 'int' object has no attribute 'lower'
+2025-03-10 11:34:36.760 | ERROR    | app.services.qr_service:generate_qr_code:54 - Error generating QR code: 'int' object has no attribute 'lower'
+2025-03-10 11:34:57.360 | ERROR    | app.services.qr_service:generate_qr_code:56 - Error generating QR code: 'int' object has no attribute 'lower'
