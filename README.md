@@ -67,7 +67,9 @@ terraform init
 terraform apply
 ```
 This will provision the required AWS resources (e.g., ECS cluster, task definitions).
-![Architecture Diagram](assets/aws-infrastructure.png)
+
+
+<p align="center"> <img src="(assets/aws-infrastructure.png)" alt="Architecture Diagram" width="600"> </p>
 
 
 ### 3. Build and Run Locally (Optional)
@@ -108,7 +110,7 @@ Access the application at `http://localhost`.
 ---
 
 ## Architecture Diagram
-![Architecture Diagram](assets/qr-pipeline-diagram.png)
+<p align="center"> <img src="(assets/qr-pipeline-diagram.png)" alt="Architecture Diagram" width="800"> </p>
 
 The diagram illustrates the flow of the CI/CD pipeline:
 1. Developer commits code to GitHub.
