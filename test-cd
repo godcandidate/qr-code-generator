@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION = 'eu-west-1'
+    }
+
+    stages {
+        stage('Approval') {
+            steps {
+                input message: 'Do you want to deploy the new image?', ok: 'Deploy'
+            }
+        }
+
+        stage('Check Task Definition') {
+            steps {
+                withAWS(credentials: 'qr-aws-cred', region: "${AWS_REGION}") {
+                     sh '''
+                        echo "ECS Task checked successfully"
+                        '''
+                }
+            }
+        }
+
+        stage('Update Task Definition') {
+            steps {
+                script {
+                    withAWS(credentials: 'qr-aws-cred', region: "${AWS_REGION}") {
+                         sh '''
+                            echo "ECS Task updated successfully"
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Update ECS Service') {
+            steps {
+                withAWS(credentials: 'qr-aws-cred', region: "${AWS_REGION}") {
+                    sh '''
+                    echo "ECS Service updated successfully"
+                    '''
+                }
+            }
+        }
+    }
+}
