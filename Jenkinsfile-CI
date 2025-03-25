@@ -46,5 +46,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Trigger CD Pipeline') {
+            steps {
+                script {
+                    // Trigger the CD pipeline and pass the new image tag as a parameter
+                    build job: 'qr-webapp-pipeline-CD'
+                }
+            }
+        }
     }  
 }  
