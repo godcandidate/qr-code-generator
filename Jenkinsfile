@@ -34,7 +34,6 @@ pipeline {
             steps {
                 dir('frontend') {
                     sh '''
-                    aws ecr-public get-login-password --region $AWS_REGION| docker login --username AWS --password-stdin $ECR_ALIAS
                     docker build -t $ECR_REPO:latest .
                     docker tag $ECR_REPO:latest public.ecr.aws/$ECR_ALIAS/$ECR_REPO:latest
                     '''
@@ -46,8 +45,8 @@ pipeline {
             steps {
                 dir('frontend') {
                     sh '''
-                    aws ecr-public get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin public.ecr.aws
-                    docker push public.ecr.aws/$ECR_ALIAS/$ECR_REPO:latest
+                    aws ecr-public get-login-password --region $AWS_REGION| docker login --username AWS --password-stdin $ECR_ALIAS
+                    docker push $ECR_ALIAS/$ECR_REPO:latest
                     '''
                 }
             }
