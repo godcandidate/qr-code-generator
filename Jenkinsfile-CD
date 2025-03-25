@@ -13,20 +13,16 @@ pipeline {
     stages {
         stage('Approval') {
             steps {
-                input message: 'Do you want to deploy the new image?', ok: 'Deploy'
+                input message: 'Do you want to deploy the new image to AWS ECS?', ok: 'Deploy'
             }
         }
 
         stage('Check Task Definition') {
             steps {
                 withAWS(credentials: 'qr-aws-cred', region: "${AWS_REGION}") {
-                    // sh '''
-                    // echo "Checking Task Definition: $TASK_FAMILY"
-                    // aws ecs describe-task-definition --task-definition $TASK_FAMILY --region $AWS_REGION > task-def.json
-                    // '''
-                    
-                     sh '''
-                    echo "ECS Task checked successfully"
+                    sh '''
+                    echo "Checking Task Definition: $TASK_FAMILY"
+                    aws ecs describe-task-definition --task-definition $TASK_FAMILY --region $AWS_REGION > task-def.json
                     '''
                 }
             }
@@ -36,20 +32,17 @@ pipeline {
             steps {
                 script {
                     withAWS(credentials: 'qr-aws-cred', region: "${AWS_REGION}") {
-                        // // Step 1: Extract only the required fields from the task definition
-                        // sh """
-                        // echo "Extracting required fields from task definition"
-                        // cat task-def.json | jq '{family: .taskDefinition.family, containerDefinitions: [.taskDefinition.containerDefinitions[] | .image = "${DOCKER_APP_IMAGE}:${NEW_IMAGE_TAG}"], volumes: .taskDefinition.volumes, networkMode: .taskDefinition.networkMode, executionRoleArn: .taskDefinition.executionRoleArn, taskRoleArn: .taskDefinition.taskRoleArn, placementConstraints: .taskDefinition.placementConstraints, requiresCompatibilities: .taskDefinition.requiresCompatibilities, cpu: .taskDefinition.cpu, memory: .taskDefinition.memory}' > updated-task-def.json
-                        // """
+                        // Step 1: Extract only the required fields from the task definition
+                        sh """
+                        echo "Extracting required fields from task definition"
+                        cat task-def.json | jq '{family: .taskDefinition.family, containerDefinitions: [.taskDefinition.containerDefinitions[] | .image = "${DOCKER_APP_IMAGE}:${NEW_IMAGE_TAG}"], volumes: .taskDefinition.volumes, networkMode: .taskDefinition.networkMode, executionRoleArn: .taskDefinition.executionRoleArn, taskRoleArn: .taskDefinition.taskRoleArn, placementConstraints: .taskDefinition.placementConstraints, requiresCompatibilities: .taskDefinition.requiresCompatibilities, cpu: .taskDefinition.cpu, memory: .taskDefinition.memory}' > updated-task-def.json
+                        """
 
-                        // // Step 2: Register the updated task definition
-                        // sh '''
-                        // echo "Registering updated task definition"
-                        // aws ecs register-task-definition --cli-input-json file://updated-task-def.json --region $AWS_REGION
-                        // '''
-                         sh '''
-                    echo "ECS Task updated successfully"
-                    '''
+                        // Step 2: Register the updated task definition
+                        sh '''
+                        echo "Registering updated task definition"
+                        aws ecs register-task-definition --cli-input-json file://updated-task-def.json --region $AWS_REGION
+                        '''
                     }
                 }
             }
@@ -58,12 +51,9 @@ pipeline {
         stage('Update ECS Service') {
             steps {
                 withAWS(credentials: 'qr-aws-cred', region: "${AWS_REGION}") {
-                    // sh '''
-                    // echo "Updating ECS Service: $SERVICE_NAME"
-                    // aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --task-definition $TASK_FAMILY --region $AWS_REGION
-                    // '''
                     sh '''
-                    echo "ECS Service updated successfully"
+                    echo "Updating ECS Service: $SERVICE_NAME"
+                    aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --task-definition $TASK_FAMILY --region $AWS_REGION
                     '''
                 }
             }
