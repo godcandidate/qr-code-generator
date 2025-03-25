@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    tools { nodejs 'nodeJS' }
+
+    environment {
+        IMAGE_NAME = 'qr-code-app'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/godcandidate/qr-code-generator.git'
+            }
+        }
+
+        stage('Install and Run Unit Tests') {
+            steps {
+                dir('frontend') {
+                    sh 'npm install'
+                    sh 'npm run lint'  // Optional static code analysis
+                    sh 'npm run test'  // Run tests before building the image
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('frontend') {
+                    sh '''
+                    docker build -t $IMAGE_NAME:latest .
+                    '''
+                }
+            }
+        }
+
+        stage('Push Image to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    dir('frontend') {
+                        sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker tag $IMAGE_NAME:latest $DOCKER_USER/$IMAGE_NAME:latest
+                        docker push $DOCKER_USER/$IMAGE_NAME:latest
+                        '''
+                    }
+                }
+            }
+        }
+    }  
+}  
