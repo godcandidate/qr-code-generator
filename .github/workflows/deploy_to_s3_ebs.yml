@@ -21,44 +21,49 @@ jobs:
         working-directory: frontend   
 
     steps:
-    # Step 1: Checkout the repository
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    # Step 2: Set up Node.js
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '22.11.0'
-
-    # Step 3: Install dependencies and build the React app
-    - name: Install dependencies
-      run: npm install
-
-    - name: Build React app
-      run: npm run build
-
-    # Step 4: Zip the application
+        # Step 4: Zip the application
     - name: Zip the application
       run: |
-        mkdir -p deployment
-        cp -r server/* deployment/  # Copy the built React app
-        cd deployment
-        zip -r ../${{ env.APP_NAME }}.zip .
+        echo "Pipeline completed" 
 
-    # Step 5: Configure AWS credentials
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+    # # Step 1: Checkout the repository
+    # - name: Checkout code
+    #   uses: actions/checkout@v3
 
-    # Step 6: Upload the zip file to S3
-    - name: Upload to S3
-      run: |
-        aws s3 cp ${{ env.APP_NAME }}.zip s3://${{ env.S3_BUCKET }}/app-${{ github.sha }}.zip
-        echo "S3 URL: s3://${{ env.S3_BUCKET }}/app-${{ github.sha }}.zip"
+    # # Step 2: Set up Node.js
+    # - name: Set up Node.js
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: '22.11.0'
+
+    # # Step 3: Install dependencies and build the React app
+    # - name: Install dependencies
+    #   run: npm install
+
+    # - name: Build React app
+    #   run: npm run build
+
+    # # Step 4: Zip the application
+    # - name: Zip the application
+    #   run: |
+    #     mkdir -p deployment
+    #     cp -r server/* deployment/  # Copy the built React app
+    #     cd deployment
+    #     zip -r ../${{ env.APP_NAME }}.zip .
+
+    # # Step 5: Configure AWS credentials
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v2
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: ${{ env.AWS_REGION }}
+
+    # # Step 6: Upload the zip file to S3
+    # - name: Upload to S3
+    #   run: |
+    #     aws s3 cp ${{ env.APP_NAME }}.zip s3://${{ env.S3_BUCKET }}/app-${{ github.sha }}.zip
+    #     echo "S3 URL: s3://${{ env.S3_BUCKET }}/app-${{ github.sha }}.zip"
 
     # # Step 7: Update Elastic Beanstalk environment
     # - name: Update Elastic Beanstalk
