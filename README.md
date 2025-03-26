@@ -25,7 +25,7 @@ This repository contains two branches, each showcasing a different deployment st
 
 ### 1. **`monolithic` Branch**
 
-- **Deployment Strategy**: Monolithic CI/CD pipeline using **GitHub Actions**.
+- **Deployment Strategy**: CI/CD pipeline using **GitHub Actions**.
 - **Pipeline Steps**:
   - **CI**: Build and test the application.
   - **CD**: Deploy to **Amazon S3** and update **Elastic Beanstalk**.
@@ -36,7 +36,7 @@ This repository contains two branches, each showcasing a different deployment st
 
 **Branch Purpose**: Ideal for users who prefer a straightforward, GitHub-native CI/CD pipeline.
 
-[View `monolithic` Branch](https://github.com/your-repo/qr-code-generator/tree/monolithic)
+[View project Details](https://github.com/godcandidate/qr-code-generator/blob/monolith/README.md)
 
 ---
 
@@ -54,7 +54,7 @@ This repository contains two branches, each showcasing a different deployment st
 
 **Branch Purpose**: Ideal for users who prefer a Jenkins-based CI/CD pipeline with Docker and AWS ECS.
 
-[View `jenkins-deploy` Branch](https://github.com/your-repo/qr-code-generator/tree/jenkins-deploy)
+[View Project details here](https://github.com/godcandidate/qr-code-generator/blob/jenkins-deploy/README.md)
 
 ---
 
