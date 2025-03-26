@@ -21,8 +21,8 @@ jobs:
         working-directory: frontend   
 
     steps:
-        # Step 4: Zip the application
-    - name: Zip the application
+        # Step 0: Mute pipeline
+    - name: Mute pipeline
       run: |
         echo "Pipeline completed" 
 
