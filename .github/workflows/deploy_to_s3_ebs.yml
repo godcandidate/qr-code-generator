@@ -16,15 +16,10 @@ jobs:
       AWS_REGION: "us-west-1"  # AWS region
 
     # Set the default working directory for all steps to frontend
-    defaults:
-      run:
-        working-directory: frontend   
+    # defaults:
+    #   run:
+    #     working-directory: frontend   
 
-    steps:
-        # Step 0: Mute pipeline
-    - name: Mute pipeline
-      run: |
-        echo "Pipeline completed" 
 
     # # Step 1: Checkout the repository
     # - name: Checkout code
